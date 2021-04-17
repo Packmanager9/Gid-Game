@@ -11,6 +11,8 @@ imgfsm.src = "imgfsm.png"
 let zap = new Audio()
 zap.src = "zap2.mp3"
 
+let tornadoimg = new Image()
+tornadoimg.src = "whirlwind.png"
 
 let womanwalkimgL = new Image()
 womanwalkimgL.src = "Woman_walkL.png"
@@ -1058,10 +1060,12 @@ file.onchange = function() {
         hit() {
             this.body.radius *= 20
             for (let t = 0; t < pinwheel.people.length; t++) {
+                if(pinwheel.people[t].dead < 0){
                 if (this.body.doesPerimeterTouch(pinwheel.people[t].body)) {
                     // pinwheel.people[t].body.color = "transparent"
-                    if(pinwheel.people[t].dead < 0){
                         pinwheel.people[t].dead = 0
+                        pinwheel.combotimer = 100
+                        pinwheel.combo++
                     }
                 }
             }
@@ -1088,9 +1092,69 @@ file.onchange = function() {
 
     let root = new Circle(350, 600, 10, "white")
     let strike = new Lightning(640, 200)
+    let vortexes = []
+    class Vortex{
+        constructor(x,y){
+            this.body = new Circle(x,y, 8, "transparent")
+            this.fatbody = new Circle(x,y, 10, "transparent")
+            this.angle = (new LineOP(this.body, pinwheel.body)).angle() - pinwheel.angle
+            this.dis = (new LineOP(this.body, pinwheel.body)).hypotenuse()
+            this.way = (Math.random()-.5)*.003
+            this.size = 1
+        }
+        draw(){
+            this.angle+=this.way
+            if(this.dis > pinwheel.body.radius){
+                this.dis-=10
+            }
+            this.step = Math.floor(Math.random()*4)
+            this.body.radius*=5
+            if(strike.body.doesPerimeterTouch(this.body)){
+                if(flash == 1){
+                    if(this.size < 2){
+                        this.size*=1.05
+                        
+                    }
+                    if(Math.abs(this.way) < .015){
+                        this.way*=1.05 
+                        
+                    }
+                }
+            }
+            this.body.radius*=.2
+            this.body.x = (this.dis * (Math.cos(this.angle + pinwheel.angle))) + pinwheel.body.x
+            this.body.y = (this.dis * (Math.sin(this.angle + pinwheel.angle))) + pinwheel.body.y
+            canvas_context.translate(this.body.x + this.body.radius, this.body.y + this.body.radius);
+            canvas_context.rotate(this.angle + pinwheel.angle + (Math.PI / 2));
+         
+            canvas_context.drawImage(tornadoimg, this.step * tornadoimg.width / 4, 0, tornadoimg.width / 4, tornadoimg.height, 0, 0 - this.body.radius * scale*1.3*this.size, this.body.radius * scale*1.3*this.size, this.body.radius * scale*1.3*this.size)
+            canvas_context.rotate(-this.angle - pinwheel.angle - (Math.PI / 2));
+            canvas_context.translate(-this.body.x - this.body.radius, -this.body.y - this.body.radius);
+
+            for(let t =0;t<pinwheel.people.length;t++){
+                if(this.body.doesPerimeterTouch(pinwheel.people[t].body)){
+                    pinwheel.people[t].dis += 20
+                    pinwheel.people[t].angle += this.way
+                    pinwheel.people[t].rate *= -3*this.size
+                    pinwheel.people[t].flung = 14*this.size
+                }
+
+            }
+            for(let t =0;t<pinwheel.buildings.length;t++){
+                if(this.body.doesPerimeterTouch(pinwheel.buildings[t].body)){
+                    pinwheel.buildings[t].dead = 0
+                    pinwheel.combotimer = 100
+                    pinwheel.combo+= 10
+                }
+
+            }
+        }
+    }
     // strike.make()
     class World {
         constructor() {
+            this.combo = 0
+            this.combotimer = 0
             this.body = new Circle(640, 3000, 2400, "green")
             this.people = []
             this.buildings = []
@@ -1106,6 +1170,13 @@ file.onchange = function() {
         }
 
         draw() {
+            canvas_context.font = "20px comic sans ms"
+            canvas_context.fillStyle = "#AA0000"
+            canvas_context.fillText(`Combo: ${this.combo}`, 10, 50)
+            if(this.combotimer <= 0 && this.combo > 0){
+                this.combo--
+            }
+            this.combotimer--
             this.body.draw()
             for (let t = 0; t < this.buildings.length; t++) {
                 this.buildings[t].draw()
@@ -1130,8 +1201,30 @@ file.onchange = function() {
                 this.rate = -1
             }
             this.dead = -1
+            this.flung = 0
+            this.active = 0
         }
         draw() {
+            if(this.dis > 2400 + this.body.radius){
+                if(this.flung > 0){
+                    this.dis+= this.flung
+                    this.flung--
+                }else if(this.flung < 0){
+                    this.flung--
+                    this.dis+= this.flung
+                }else{
+                    this.flung--
+                }
+                this.active = 1
+            }else{
+                if(this.active ==1){
+                    if(this.dead<0){
+                        this.dead = 0
+                        pinwheel.combotimer = 100
+                        pinwheel.combo++
+                    }
+                }
+            }
             this.count++
             if (this.count == 6) {
                 this.count = 0
@@ -1263,6 +1356,8 @@ file.onchange = function() {
                 if(this.dead == -1){
                     if(flash === 1){
                         this.dead= 1
+                        pinwheel.combotimer = 100
+                        pinwheel.combo+= 10
                     }
                 }
             }else{
@@ -1296,11 +1391,15 @@ file.onchange = function() {
     }
     let pinwheel = new World()
 
-
     let flash = 0
 
     let runner = -1
     function main() {
+        if(keysPressed[' ']){
+            if(vortexes.length < 1){
+                vortexes.push(new Vortex(strike.eye.x-strike.eye.radius*scale/2,  strike.eye.y-strike.eye.radius*scale/2))
+            }
+        }
         if(runner < 0){
             canvas_context.clearRect(0, 0, canvas.width, canvas.height)  // refreshes the image
             gamepadAPI.update() //checks for button presses/stick movement on the connected controller)
@@ -1309,6 +1408,9 @@ file.onchange = function() {
             // strike.eye.draw()
             // root.draw()
             pinwheel.draw()
+            for(let t =0;t<vortexes.length;t++){
+                vortexes[t].draw()
+            }
             if (flash == 1) {
                 // zap.play()
                 strike.make()
