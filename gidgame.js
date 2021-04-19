@@ -1,9 +1,16 @@
 let scale = 4.7
 let houseimg = new Image()
 houseimg.src = "house.png"
+let towerimg = new Image()
+towerimg.src = "tower.png"
+
+
 
 let deadhouseimg = new Image()
 deadhouseimg.src = "deadhouse.png"
+
+let monolithimg = new Image()
+monolithimg.src = "monolith.png"
 
 let imgfsm = new Image()
 imgfsm.src = "imgfsm.png"
@@ -70,6 +77,32 @@ let Old_womandeathimg = new Image()
 Old_womandeathimg.src = "Old_woman_death.png"
 let Old_womandeathimgL = new Image()
 Old_womandeathimgL.src = "Old_woman_deathL.png"
+
+
+let womanattackimgL = new Image()
+womanattackimgL.src = "Woman_attackL.png"
+let womanattackimg = new Image()
+womanattackimg.src = "Woman_attack.png"
+let ManattackimgL = new Image()
+ManattackimgL.src = "Man_attackL.png"
+let Manattackimg = new Image()
+Manattackimg.src = "Man_attack.png"
+let GirlattackimgL = new Image()
+GirlattackimgL.src = "Girl_attackL.png"
+let Girlattackimg = new Image()
+Girlattackimg.src = "Girl_attack.png"
+let BoyattackimgL = new Image()
+BoyattackimgL.src = "Boy_attackL.png"
+let Boyattackimg = new Image()
+Boyattackimg.src = "Boy_attack.png"
+let Old_womanattackimgL = new Image()
+Old_womanattackimgL.src = "Old_woman_attackL.png"
+let Old_womanattackimg = new Image()
+Old_womanattackimg.src = "Old_woman_attack.png"
+let Old_manattackimgL = new Image()
+Old_manattackimgL.src = "Old_man_attackL.png"
+let Old_manattackimg = new Image()
+Old_manattackimg.src = "Old_man_attack.png"
 
 
 window.addEventListener('DOMContentLoaded', (event) => {
@@ -211,6 +244,12 @@ window.addEventListener('DOMContentLoaded', (event) => {
             let ydif = this.object.y - this.target.y
             let hypotenuse = (xdif * xdif) + (ydif * ydif)
             return Math.sqrt(hypotenuse)
+        }
+        squareDistance() {
+            let xdif = this.object.x - this.target.x
+            let ydif = this.object.y - this.target.y
+            let hypotenuse = (xdif * xdif) + (ydif * ydif)
+            return (hypotenuse)
         }
         draw() {
             let linewidthstorage = canvas_context.lineWidth
@@ -594,19 +633,19 @@ window.addEventListener('DOMContentLoaded', (event) => {
             if (body == 0) {
                 this.body = new Circle(x, y, radius, color)
                 this.anchor = new Circle(x, y, radius, color)
-                this.beam = new Line(this.body.x, this.body.y, this.anchor.x, this.anchor.y, "yellow", width)
+                this.beam = new Line(this.body.x, this.body.y, this.anchor.x, this.anchor.y, "tan", width)
                 this.length = length
             } else {
                 this.body = body
                 this.anchor = new Circle(x, y, radius, color)
-                this.beam = new Line(this.body.x, this.body.y, this.anchor.x, this.anchor.y, "yellow", width)
+                this.beam = new Line(this.body.x, this.body.y, this.anchor.x, this.anchor.y, "tan", width)
                 this.length = length
             }
             this.gravity = gravity
             this.width = width
         }
         balance() {
-            this.beam = new Line(this.body.x, this.body.y, this.anchor.x, this.anchor.y, "yellow", this.width)
+            this.beam = new Line(this.body.x, this.body.y, this.anchor.x, this.anchor.y, "tan", this.width)
             if (this.beam.hypotenuse() < this.length) {
                 this.body.xmom += (this.body.x - this.anchor.x) / this.length
                 this.body.ymom += (this.body.y - this.anchor.y) / this.length
@@ -996,7 +1035,7 @@ file.onchange = function() {
             this.targets = [root]
             this.target = 0
             this.counter = 0
-            this.segrange = 20
+            this.segrange = 24
             this.seg = Math.random() * this.segrange
             this.life = 1000000000
         }
@@ -1012,6 +1051,10 @@ file.onchange = function() {
                         this.target++
                     }
                     this.counter++
+                    if(this.life > 12){
+                        this.body.xmom *= 1.05
+                        this.body.ymom *= 1.05
+                    }
                     this.body.frictiveMove()
                     if (this.counter >= this.seg) {
                         this.life--
@@ -1025,11 +1068,11 @@ file.onchange = function() {
                             let link = new LineOP(this.targets[this.target], this.body, "red", 1)
                             if (Math.random() < .5) {
                                 let link = new LineOP(this.targets[this.target], this.body, "red", 1)
-                                this.body.xmom = (this.targets[this.target].x - this.body.x) / (link.hypotenuse() * 100)
-                                this.body.ymom = (this.targets[this.target].y - this.body.y) / (link.hypotenuse() * 100)
+                                this.body.xmom = (this.targets[this.target].x - this.body.x) / (link.squareDistance() * 200)
+                                this.body.ymom = (this.targets[this.target].y - this.body.y) / (link.squareDistance() * 200)
                             } else {
-                                this.body.xmom += ((Math.random() - .5) / 2.7) + (this.targets[this.target].x - this.body.x) / (link.hypotenuse() * 10)
-                                this.body.ymom += ((Math.random() - .5) / 2.7) + (this.targets[this.target].y - this.body.y) / (link.hypotenuse() * 10)
+                                this.body.xmom += ((Math.random() - .5) / 2.7) + (this.targets[this.target].x - this.body.x) / (link.squareDistance() * 20)
+                                this.body.ymom += ((Math.random() - .5) / 2.7) + (this.targets[this.target].y - this.body.y) / (link.squareDistance() * 20)
                                 if (this.life == 3) {
                                     this.body.xmom *= 1.5
                                     this.body.ymom *= 1.5
@@ -1039,11 +1082,12 @@ file.onchange = function() {
 
                             if (Math.random() < .9) {
                                 let link = new LineOP(this.targets[this.target], this.body, "red", 1)
-                                this.body.xmom = (this.targets[this.target].x - this.body.x) / (link.hypotenuse() * 1000)
-                                this.body.ymom = (this.targets[this.target].y - this.body.y) / (link.hypotenuse() * 1000)
+                                this.body.xmom = (this.targets[this.target].x - this.body.x) / (link.squareDistance()*3)
+                                this.body.ymom = (this.targets[this.target].y - this.body.y) / (link.squareDistance()*3)
                             } else {
-                                this.body.xmom += (Math.random() - .5) / 10
-                                this.body.ymom += (Math.random() - .5) / 10
+                                let link = new LineOP(this.targets[this.target], this.body, "red", 1)
+                                this.body.xmom += ((Math.random() - .5) / 20) 
+                                this.body.ymom += (Math.random() - .5) / 20
                             }
                         }
 
@@ -1060,15 +1104,18 @@ file.onchange = function() {
         hit() {
             this.body.radius *= 20
             for (let t = 0; t < pinwheel.people.length; t++) {
+                if(pinwheel.people[t].onscreen == 1){
                 if(pinwheel.people[t].dead < 0){
                 if (this.body.doesPerimeterTouch(pinwheel.people[t].body)) {
                     // pinwheel.people[t].body.color = "transparent"
+                    
                         pinwheel.people[t].dead = 0
                         pinwheel.combotimer = 100
                         pinwheel.combo++
                     }
                 }
             }
+        }
         }
         draw() {
             // if (this.life > 100) {
@@ -1099,6 +1146,8 @@ file.onchange = function() {
             this.fatbody = new Circle(x,y, 10, "transparent")
             this.angle = (new LineOP(this.body, pinwheel.body)).angle() - pinwheel.angle
             this.dis = (new LineOP(this.body, pinwheel.body)).hypotenuse()
+            this.way = 0
+            while(Math.abs(this.way) < .001)
             this.way = (Math.random()-.5)*.003
             this.size = 1
         }
@@ -1127,16 +1176,18 @@ file.onchange = function() {
             canvas_context.translate(this.body.x + this.body.radius, this.body.y + this.body.radius);
             canvas_context.rotate(this.angle + pinwheel.angle + (Math.PI / 2));
          
-            canvas_context.drawImage(tornadoimg, this.step * tornadoimg.width / 4, 0, tornadoimg.width / 4, tornadoimg.height, 0, 0 - this.body.radius * scale*1.3*this.size, this.body.radius * scale*1.3*this.size, this.body.radius * scale*1.3*this.size)
+            canvas_context.drawImage(tornadoimg, this.step * tornadoimg.width / 4, 0, tornadoimg.width / 4, tornadoimg.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale*1.3*this.size, this.body.radius * scale*1.3*this.size, this.body.radius * scale*1.3*this.size)
             canvas_context.rotate(-this.angle - pinwheel.angle - (Math.PI / 2));
             canvas_context.translate(-this.body.x - this.body.radius, -this.body.y - this.body.radius);
 
             for(let t =0;t<pinwheel.people.length;t++){
                 if(this.body.doesPerimeterTouch(pinwheel.people[t].body)){
+                    if(pinwheel.people[t].onscreen == 1){
                     pinwheel.people[t].dis += 20
                     pinwheel.people[t].angle += this.way
                     pinwheel.people[t].rate *= -3*this.size
                     pinwheel.people[t].flung = 14*this.size
+                    }
                 }
 
             }
@@ -1145,6 +1196,11 @@ file.onchange = function() {
                     pinwheel.buildings[t].dead = 0
                     pinwheel.combotimer = 100
                     pinwheel.combo+= 10
+                    if(this.size >= 2){
+                        pinwheel.buildings[t].angle += this.way
+                        pinwheel.buildings[t].dis += 5
+                        pinwheel.buildings[t].flung = 8*this.size
+                    }
                 }
 
             }
@@ -1163,13 +1219,28 @@ file.onchange = function() {
                 let person = new People()
                 this.people.push(person)
             }
-            for (let t = 0; t < 10; t++) {
+            for (let t = 0; t < 20; t++) {
                 let person = new House()
                 this.buildings.push(person)
             }
+            this.gid = {}
+            this.gid.body = new Circle(0,0,40, "red")
+            this.gid.health = 10000
+            this.gid.maxhealth = 10000
+            this.gid.angle = 3*(Math.PI/2)
+            this.gid.dis = 2432
+            this.gid.size = .5
+
         }
 
         draw() {
+            if(flash == 1){
+                if(strike.body.doesPerimeterTouch(this.gid.body)){
+                    if(this.gid.health<this.gid.maxhealth){
+                        this.gid.health+=100
+                    }
+                }
+            }
             canvas_context.font = "20px comic sans ms"
             canvas_context.fillStyle = "#AA0000"
             canvas_context.fillText(`Combo: ${this.combo}`, 10, 50)
@@ -1182,20 +1253,66 @@ file.onchange = function() {
                 this.buildings[t].draw()
             }
             for (let t = 0; t < this.people.length; t++) {
-                this.people[t].draw()
+                this.people[t].dirty()
             }
+            for (let t = 0; t < this.people.length; t++) {
+                if(this.people[t].onscreen == 1){
+                    this.people[t].draw()
+                }
+                if(this.gid.body.doesPerimeterTouch(this.people[t].body)){
+                    if(this.people[t].dead <= -1){
+                        this.gid.health--
+                        if(this.people[t].body.x > this.gid.body.x){
+                            this.people[t].rate = -.0000001
+                            if(this.people[t].attacking == -1){
+                                this.people[t].attacking = 1
+                            }
+                        }else{
+                            this.people[t].rate = .0000001
+                            if(this.people[t].attacking == -1){
+                                this.people[t].attacking = 1
+                            }
+                        }
+                    }
+                }
+            }
+            canvas_context.fillStyle = "yellow"
+            canvas_context.fillRect(10, 70, (this.gid.health/this.gid.maxhealth)*100, 10)
+            for (let t = 0; t < this.people.length; t++) {
+                this.people[t].clean()
+            }
+
+            // this.gid.body.draw()
+
+            this.gid.body.x = (this.gid.dis * (Math.cos(this.gid.angle + pinwheel.angle))) + pinwheel.body.x
+            this.gid.body.y = (this.gid.dis * (Math.sin(this.gid.angle + pinwheel.angle))) + pinwheel.body.y
+
+
+                if(this.gid.health> 0){
+                    canvas_context.translate(this.gid.body.x + this.gid.body.radius, this.gid.body.y + this.gid.body.radius);
+                    canvas_context.rotate(this.gid.angle + pinwheel.angle + (Math.PI / 2));
+                    canvas_context.drawImage(monolithimg, 0 , 0, monolithimg.width, monolithimg.height, -20 - this.gid.body.radius * (scale/2), 10 - this.gid.body.radius * scale*1.3*this.gid.size, this.gid.body.radius * scale*1.3*this.gid.size, this.gid.body.radius * scale*1.3*this.gid.size)
+                    canvas_context.rotate(-this.gid.angle - pinwheel.angle - (Math.PI / 2));
+                    canvas_context.translate(-this.gid.body.x - this.gid.body.radius, -this.gid.body.y - this.gid.body.radius);
+                }
+
+            // this.gid.body.draw()
+
         }
 
     }
 
+    let rectscreen = new Rectangle(0,0,canvas.width,canvas.height)
     class People {
         constructor() {
+            this.attacking = -1
             this.body = new Circle(0, 0, 10, "tan")
             this.angle = Math.random() * Math.PI * 2
             this.dis = 2400 + this.body.radius
             this.step = 0
             this.count = 0
             this.rate = 1
+            this.onscreen = 1
             this.type = Math.floor(Math.random() * 6)
             if (Math.random() < .5) {
                 this.rate = -1
@@ -1204,7 +1321,30 @@ file.onchange = function() {
             this.flung = 0
             this.active = 0
         }
+        dirty(){
+            if(this.body.y < canvas.height){
+                this.onscreen = 1
+            }else{
+                this.onscreen = 0
+
+            if (this.dead == -1) {
+                this.angle += 0.0005 * this.rate
+            }
+                this.body.x = (this.dis * (Math.cos(this.angle + pinwheel.angle))) + pinwheel.body.x
+                this.body.y = (this.dis * (Math.sin(this.angle + pinwheel.angle))) + pinwheel.body.y
+            }
+
+        }
+        clean(){
+            if(this.body.doesPerimeterTouch(strike.eye)){
+                manat.mana+=10
+                pinwheel.combo++
+                pinwheel.combotimer = 100
+                pinwheel.people.splice(pinwheel.people.indexOf(this), 1)
+            }
+        }
         draw() {
+            // this.body.draw()
             if(this.dis > 2400 + this.body.radius){
                 if(this.flung > 0){
                     this.dis+= this.flung
@@ -1225,11 +1365,19 @@ file.onchange = function() {
                     }
                 }
             }
+
+            if(this.dis<2400+this.body.radius){
+                this.dis = 2400+this.body.radius
+            }
             this.count++
             if (this.count == 6) {
                 this.count = 0
                 this.step++
                 this.step %= 6
+                if(this.attacking > -1){
+                    this.attacking++
+                    this.attacking %= 4
+                }
                 if (this.dead > -1) {
                     this.dead++
                     if (this.dead >= 3) {
@@ -1246,38 +1394,76 @@ file.onchange = function() {
             }
             this.body.x = (this.dis * (Math.cos(this.angle + pinwheel.angle))) + pinwheel.body.x
             this.body.y = (this.dis * (Math.sin(this.angle + pinwheel.angle))) + pinwheel.body.y
+            if(this.marked == 3){
+                this.body.x = tongue.body.x
+                this.body.y = (tongue.body.y-tongue.momentum)
+            }
             // this.body.draw()
             if (this.dead == -1) {
                 canvas_context.translate(this.body.x + this.body.radius, this.body.y + this.body.radius);
                 canvas_context.rotate(this.angle + pinwheel.angle + (Math.PI / 2));
                 if (this.rate > 0) {
+                    if(this.attacking == -1){
                     if (this.type == 0) {
-                        canvas_context.drawImage(womanwalkimg, this.step * womanwalkimg.width / 6, 0, womanwalkimg.width / 6, womanwalkimg.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                            canvas_context.drawImage(womanwalkimg, this.step * womanwalkimg.width / 6, 0, womanwalkimg.width / 6, womanwalkimg.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                     } else if(this.type == 1){
-                        canvas_context.drawImage(Manwalkimg, this.step * Manwalkimg.width / 6, 0, Manwalkimg.width / 6, Manwalkimg.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                        canvas_context.drawImage(Manwalkimg, this.step * Manwalkimg.width / 6, 0, Manwalkimg.width / 6, Manwalkimg.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                     }else if(this.type == 2){
-                        canvas_context.drawImage(Girlwalkimg, this.step * Girlwalkimg.width / 6, 0, Girlwalkimg.width / 6, Girlwalkimg.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                        canvas_context.drawImage(Girlwalkimg, this.step * Girlwalkimg.width / 6, 0, Girlwalkimg.width / 6, Girlwalkimg.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                     }else if(this.type == 3){
-                        canvas_context.drawImage(Boywalkimg, this.step * Boywalkimg.width / 6, 0, Boywalkimg.width / 6, Boywalkimg.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                        canvas_context.drawImage(Boywalkimg, this.step * Boywalkimg.width / 6, 0, Boywalkimg.width / 6, Boywalkimg.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                     }else if(this.type == 4){
-                        canvas_context.drawImage(Old_manwalkimg, this.step * Old_manwalkimg.width / 6, 0, Old_manwalkimg.width / 6, Old_manwalkimg.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                        canvas_context.drawImage(Old_manwalkimg, this.step * Old_manwalkimg.width / 6, 0, Old_manwalkimg.width / 6, Old_manwalkimg.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                     }else if(this.type == 5){
-                        canvas_context.drawImage(Old_womanwalkimg, this.step * Old_womanwalkimg.width / 6, 0, Old_womanwalkimg.width / 6, Old_womanwalkimg.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                        canvas_context.drawImage(Old_womanwalkimg, this.step * Old_womanwalkimg.width / 6, 0, Old_womanwalkimg.width / 6, Old_womanwalkimg.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                     }
-                } else {
+                }else{
+
                     if (this.type == 0) {
-                        canvas_context.drawImage(womanwalkimgL, this.step * womanwalkimgL.width / 6, 0, womanwalkimgL.width / 6, womanwalkimgL.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                        canvas_context.drawImage(womanattackimg, this.attacking * womanattackimg.width / 4, 0, womanattackimg.width / 4, womanattackimg.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                } else if(this.type == 1){
+                    canvas_context.drawImage(Manattackimg, this.attacking * Manattackimg.width / 4, 0, Manattackimg.width / 4, Manattackimg.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                }else if(this.type == 2){
+                    canvas_context.drawImage(Girlattackimg, this.attacking * Girlattackimg.width / 4, 0, Girlattackimg.width / 4, Girlattackimg.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                }else if(this.type == 3){
+                    canvas_context.drawImage(Boyattackimg, this.attacking * Boyattackimg.width / 4, 0, Boyattackimg.width / 4, Boyattackimg.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                }else if(this.type == 4){
+                    canvas_context.drawImage(Old_manattackimg, this.attacking * Old_manattackimg.width / 4, 0, Old_manattackimg.width / 4, Old_manattackimg.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                }else if(this.type == 5){
+                    canvas_context.drawImage(Old_womanattackimg, this.attacking * Old_womanattackimg.width / 4, 0, Old_womanattackimg.width / 4, Old_womanattackimg.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                }
+                }
+                } else {
+                    if(this.attacking == -1){
+                    if (this.type == 0) {
+                        canvas_context.drawImage(womanwalkimgL, this.step * womanwalkimgL.width / 6, 0, womanwalkimgL.width / 6, womanwalkimgL.height,  - this.body.radius * (scale/2)-15, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                     } else if(this.type == 1){
-                        canvas_context.drawImage(ManwalkimgL, this.step * ManwalkimgL.width / 6, 0, ManwalkimgL.width / 6, ManwalkimgL.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                        canvas_context.drawImage(ManwalkimgL, this.step * ManwalkimgL.width / 6, 0, ManwalkimgL.width / 6, ManwalkimgL.height,  - this.body.radius * (scale/2)-15, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                     } else if(this.type == 2){
-                        canvas_context.drawImage(GirlwalkimgL, this.step * GirlwalkimgL.width / 6, 0, GirlwalkimgL.width / 6, GirlwalkimgL.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                        canvas_context.drawImage(GirlwalkimgL, this.step * GirlwalkimgL.width / 6, 0, GirlwalkimgL.width / 6, GirlwalkimgL.height,  - this.body.radius * (scale/2)-15, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                     }else if(this.type == 3){
-                        canvas_context.drawImage(BoywalkimgL, this.step * BoywalkimgL.width / 6, 0, BoywalkimgL.width / 6, BoywalkimgL.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                        canvas_context.drawImage(BoywalkimgL, this.step * BoywalkimgL.width / 6, 0, BoywalkimgL.width / 6, BoywalkimgL.height,  - this.body.radius * (scale/2)-15, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                     }else if(this.type == 4){
-                        canvas_context.drawImage(Old_manwalkimgL, this.step * Old_manwalkimgL.width / 6, 0, Old_manwalkimgL.width / 6, Old_manwalkimgL.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                        canvas_context.drawImage(Old_manwalkimgL, this.step * Old_manwalkimgL.width / 6, 0, Old_manwalkimgL.width / 6, Old_manwalkimgL.height,  - this.body.radius * (scale/2)-15, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                     }else if(this.type == 5){
-                        canvas_context.drawImage(Old_womanwalkimgL, this.step * Old_womanwalkimgL.width / 6, 0, Old_womanwalkimgL.width / 6, Old_womanwalkimgL.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                        canvas_context.drawImage(Old_womanwalkimgL, this.step * Old_womanwalkimgL.width / 6, 0, Old_womanwalkimgL.width / 6, Old_womanwalkimgL.height,  - this.body.radius * (scale/2)-15, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                     }
+                }else{
+
+                    if (this.type == 0) {
+                        canvas_context.drawImage(womanattackimgL, this.attacking * womanattackimgL.width / 4, 0, womanattackimgL.width / 4, womanattackimgL.height,  - this.body.radius * (scale/2)-15, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                    } else if(this.type == 1){
+                        canvas_context.drawImage(ManattackimgL, this.attacking * ManattackimgL.width / 4, 0, ManattackimgL.width / 4, ManattackimgL.height,  - this.body.radius * (scale/2)-15, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                    } else if(this.type == 2){
+                        canvas_context.drawImage(GirlattackimgL, this.attacking * GirlattackimgL.width / 4, 0, GirlattackimgL.width / 4, GirlattackimgL.height,  - this.body.radius * (scale/2)-15, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                    }else if(this.type == 3){
+                        canvas_context.drawImage(BoyattackimgL, this.attacking * BoyattackimgL.width / 4, 0, BoyattackimgL.width / 4, BoyattackimgL.height,  - this.body.radius * (scale/2)-15, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                    }else if(this.type == 4){
+                        canvas_context.drawImage(Old_manattackimgL, this.attacking * Old_manattackimgL.width / 4, 0, Old_manattackimgL.width / 4, Old_manattackimgL.height,  - this.body.radius * (scale/2)-15, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                    }else if(this.type == 5){
+                        canvas_context.drawImage(Old_womanattackimgL, this.attacking * Old_womanattackimgL.width / 4, 0, Old_womanattackimgL.width / 4, Old_womanattackimgL.height,  - this.body.radius * (scale/2)-15, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                    }
+                }
                 }
                 canvas_context.rotate(-this.angle - pinwheel.angle - (Math.PI / 2));
                 canvas_context.translate(-this.body.x - this.body.radius, -this.body.y - this.body.radius);
@@ -1287,32 +1473,32 @@ file.onchange = function() {
                 if (this.dead > -1) {
                     if (this.rate > 0) {
                         if (this.type == 0) {
-                            canvas_context.drawImage(womandeathimg, this.dead * womandeathimg.width / 4, 0, womandeathimg.width / 4, womandeathimg.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                            canvas_context.drawImage(womandeathimg, this.dead * womandeathimg.width / 4, 0, womandeathimg.width / 4, womandeathimg.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                         }else if(this.type == 1){
-                            canvas_context.drawImage(Mandeathimg,this.dead *  Mandeathimg.width / 4, 0, Mandeathimg.width / 4, Mandeathimg.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                            canvas_context.drawImage(Mandeathimg,this.dead *  Mandeathimg.width / 4, 0, Mandeathimg.width / 4, Mandeathimg.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                         }else if(this.type == 2){
-                            canvas_context.drawImage(Girldeathimg, this.dead * Girldeathimg.width / 5, 0, Girldeathimg.width / 5, Girldeathimg.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                            canvas_context.drawImage(Girldeathimg, this.dead * Girldeathimg.width / 5, 0, Girldeathimg.width / 5, Girldeathimg.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                         }else if(this.type == 3){
-                            canvas_context.drawImage(Boydeathimg, this.dead * Boydeathimg.width / 5, 0, Boydeathimg.width / 5, Boydeathimg.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                            canvas_context.drawImage(Boydeathimg, this.dead * Boydeathimg.width / 5, 0, Boydeathimg.width / 5, Boydeathimg.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                         }else if(this.type == 4){
-                            canvas_context.drawImage(Old_mandeathimg, this.dead * Old_mandeathimg.width / 4, 0, Old_mandeathimg.width / 4, Old_mandeathimg.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                            canvas_context.drawImage(Old_mandeathimg, this.dead * Old_mandeathimg.width / 4, 0, Old_mandeathimg.width / 4, Old_mandeathimg.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                         }else if(this.type == 5){
-                            canvas_context.drawImage(Old_womandeathimg, (this.dead * Old_womandeathimg.width / 4), 0, Old_womandeathimg.width / 4, Old_womandeathimg.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                            canvas_context.drawImage(Old_womandeathimg, (this.dead * Old_womandeathimg.width / 4), 0, Old_womandeathimg.width / 4, Old_womandeathimg.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                         }
                     
                 } else {
                     if (this.type == 0) {
-                        canvas_context.drawImage(womandeathimgL, (3 - (this.dead)) * womandeathimgL.width / 4, 0, womandeathimgL.width / 4, womandeathimgL.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                        canvas_context.drawImage(womandeathimgL, (3 - (this.dead)) * womandeathimgL.width / 4, 0, womandeathimgL.width / 4, womandeathimgL.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                     }else if(this.type == 1){
-                        canvas_context.drawImage(MandeathimgL, (3 - (this.dead)) * MandeathimgL.width / 4, 0, MandeathimgL.width / 4, MandeathimgL.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                        canvas_context.drawImage(MandeathimgL, (3 - (this.dead)) * MandeathimgL.width / 4, 0, MandeathimgL.width / 4, MandeathimgL.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                     }else if(this.type == 2){
-                        canvas_context.drawImage(GirldeathimgL, (4 - (this.dead)) * GirldeathimgL.width / 5, 0, GirldeathimgL.width / 5, GirldeathimgL.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                        canvas_context.drawImage(GirldeathimgL, (4 - (this.dead)) * GirldeathimgL.width / 5, 0, GirldeathimgL.width / 5, GirldeathimgL.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                     }else if(this.type == 3){
-                        canvas_context.drawImage(BoydeathimgL, (4 - (this.dead)) * BoydeathimgL.width / 5, 0, BoydeathimgL.width / 5, BoydeathimgL.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                        canvas_context.drawImage(BoydeathimgL, (4 - (this.dead)) * BoydeathimgL.width / 5, 0, BoydeathimgL.width / 5, BoydeathimgL.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                     }else if(this.type == 4){
-                        canvas_context.drawImage(Old_mandeathimgL, (3 - (this.dead)) * Old_mandeathimgL.width / 4, 0, Old_mandeathimgL.width / 4, Old_mandeathimgL.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                        canvas_context.drawImage(Old_mandeathimgL, (3 - (this.dead)) * Old_mandeathimgL.width / 4, 0, Old_mandeathimgL.width / 4, Old_mandeathimgL.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                     }else if(this.type == 5){
-                        canvas_context.drawImage(Old_womandeathimgL, ((3 - (this.dead)) * Old_womandeathimgL.width / 4), 0, (Old_womandeathimgL.width / 4), Old_womandeathimgL.height, 0, 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
+                        canvas_context.drawImage(Old_womandeathimgL, ((3 - (this.dead)) * Old_womandeathimgL.width / 4), 0, (Old_womandeathimgL.width / 4), Old_womandeathimgL.height,  - this.body.radius * (scale/2), 0 - this.body.radius * scale, this.body.radius * scale, this.body.radius * scale)
                     }
                 }
             }
@@ -1335,13 +1521,60 @@ file.onchange = function() {
     }
     class House {
         constructor() {
-            this.body = new Circle(0, 0, 0, 30, "tan", 50)
+            this.body = new Circle(0, 0, 30, "tan")
             this.angle = Math.random() * Math.PI * 2
             this.dis = 2400
             this.roof = new Roof()
-            this.dead = -11
+            this.dead = -1
+            this.flung = 0
+            this.type = 0
+            if(Math.random()<.2){
+                this.type = 1
+            }
         }
         draw() {
+            if(this.dead > -1){
+                if(Math.random()<.05){
+                    for(let t =0;t<pinwheel.people.length;t++){
+                        if(pinwheel.people[t].dead == -1){
+                            if(this.body.doesPerimeterTouch(pinwheel.people[t].body)){
+                                this.dead = -1
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            if(this.dis<2400){
+                this.dis = 2400
+            }
+            if(this.dis > 2400){
+                if(this.flung > 0){
+                    this.dis+= this.flung
+                    this.flung--
+                    if(this.dis<2400){
+                        this.dis = 2400
+                    }
+                }else if(this.flung < 0){
+                    this.flung--
+                    this.dis+= this.flung
+                    if(this.dis<2400){
+                        this.dis = 2400
+                    }
+                }else{
+                    this.flung--
+                }
+                this.active = 1
+            }else{
+                if(this.active ==1){
+                    if(this.dead<0){
+                        this.dead = 0
+                        pinwheel.combotimer = 100
+                        pinwheel.combo++
+                    }
+                }
+            }
             this.body.x = (this.dis * (Math.cos(this.angle + pinwheel.angle))) + pinwheel.body.x
             this.body.y = (this.dis * (Math.sin(this.angle + pinwheel.angle))) + pinwheel.body.y
             this.body.x2 = ((this.dis + 50) * (Math.cos(this.angle + pinwheel.angle))) + pinwheel.body.x
@@ -1366,15 +1599,24 @@ file.onchange = function() {
             canvas_context.translate(this.body.x + this.body.radius, this.body.y + this.body.radius);
             canvas_context.rotate(this.angle + pinwheel.angle + (Math.PI / 2));
             if(this.dead == -1 ){
-                canvas_context.drawImage(houseimg, 0, 0, houseimg.width, houseimg.height, 0, 0 - 70, 70, 70)
+                if(this.type == 0){
+                    canvas_context.drawImage(houseimg, 0, 0, houseimg.width, houseimg.height, -70, 0 - 95, 70, 70)
+                }else{
+                    canvas_context.drawImage(towerimg, 0, 0, towerimg.width, towerimg.height, -70, 0 - 165, 70, 140)
+                }
 
-            if(Math.random()<.01){
+            if(Math.random()<.01 + (this.type/50)){
                 let per = new People()
                 per.angle = this.angle
                 pinwheel.people.push(per)
             }
             }else{
-                canvas_context.drawImage(deadhouseimg, this.dead*deadhouseimg.width/3, 0, deadhouseimg.width/3, houseimg.height, 0, 0 - 70, 70, 70)
+                if(this.type == 0){
+                canvas_context.drawImage(deadhouseimg, this.dead*deadhouseimg.width/3, 0, deadhouseimg.width/3, houseimg.height,-70, 0 - 95, 70, 70)
+                }else{
+                    this.dead = -1
+                    canvas_context.drawImage(towerimg, 0, 0, towerimg.width, towerimg.height, -70, 0 - 165, 70, 140)
+                }
                 if(Math.random()<.5){
                     this.dead++
                 }
@@ -1385,18 +1627,91 @@ file.onchange = function() {
 
             canvas_context.rotate(-this.angle - pinwheel.angle - (Math.PI / 2));
             canvas_context.translate(-this.body.x - this.body.radius, -this.body.y - this.body.radius);
+
+            // this.body.draw()
         }
 
+
+    }
+
+    class Mana{
+        constructor(){
+            this.body = new Rectangle(10, 100, 100, 10, "red")
+            this.mana = 100
+            this.maxmana = 100
+        }
+        draw(){
+            if(this.mana <= 0){
+                flash = 0
+                this.mana = 0
+                // vortexes = []
+            }
+            this.maxmana= 100+pinwheel.combo
+            if(this.mana > this.maxmana){
+                this.mana = 100
+            }
+
+            this.body.width = (this.mana/this.maxmana)*100
+            this.body.draw()
+        }
+
+
+    }
+
+    class Noodle{
+        constructor(){
+            this.body = new Circle(strike.eye.x, strike.eye.y, 3, "yellow")
+            this.stage = 0
+            this.momentum = 0
+            this.link = new LineOP(this.body, strike.eye, "yellow",2)
+        }
+        draw(){
+            this.momentum -= (this.body.y-strike.eye.y)/200
+            this.body.move()
+            this.body.draw()
+            this.link = new LineOP(this.body, strike.eye, "yellow", 2)
+            this.link.draw()
+            canvas_context.stroke()
+            this.body.y+=this.momentum
+            if(this.body.y <strike.eye.y){
+                this.body.y = strike.eye.y
+                this.momentum = 0
+            }
+            // if(strike.eye.isPointInside(this.body)){
+                if(keysPressed['s']){
+                    this.launch()
+                }else if(keysPressed['w']){
+                    this.launch()
+                }
+            // }else{
+            //     this.momentum--
+            // }
+            this.body.radius = 20
+            for(let t = 0;t<pinwheel.people.length;t++){
+                if(pinwheel.people[t].body.doesPerimeterTouch(this.body)){
+                    pinwheel.people[t].marked = 3
+                }
+            }
+            this.body.radius = 3
+        }
+        launch(){
+            if(this.momentum == 0){
+                this.momentum = 27
+            }
+        }
 
     }
     let pinwheel = new World()
 
     let flash = 0
+    let tongue = new Noodle()
+    let manat = new Mana()
 
     let runner = -1
     function main() {
         if(keysPressed[' ']){
-            if(vortexes.length < 1){
+            if(manat.mana >= 41){
+                manat.mana -= 40
                 vortexes.push(new Vortex(strike.eye.x-strike.eye.radius*scale/2,  strike.eye.y-strike.eye.radius*scale/2))
             }
         }
@@ -1404,16 +1719,19 @@ file.onchange = function() {
             canvas_context.clearRect(0, 0, canvas.width, canvas.height)  // refreshes the image
             gamepadAPI.update() //checks for button presses/stick movement on the connected controller)
             // game code goes here
+            tongue.draw()
             canvas_context.drawImage(imgfsm, 0,0, imgfsm.width, imgfsm.height, strike.eye.x-strike.eye.radius*scale/2,  strike.eye.y-strike.eye.radius*scale/2, strike.eye.radius*scale,strike.eye.radius*scale)
             // strike.eye.draw()
             // root.draw()
             pinwheel.draw()
+            manat.draw()
             for(let t =0;t<vortexes.length;t++){
                 vortexes[t].draw()
             }
             if (flash == 1) {
+                manat.mana--
                 // zap.play()
-                strike.make()
+                    strike.make()
                 strike.draw()
                 strike.hit()
                 for (let t = 0; t < strikes.length; t++) {
@@ -1421,6 +1739,8 @@ file.onchange = function() {
                     strikes[t].draw()
                 }
                 strikes = []
+            }else{
+                manat.mana+=.5
             }
     
             if (keysPressed['d']) {
